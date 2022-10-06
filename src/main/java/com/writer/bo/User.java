@@ -1,12 +1,19 @@
 package com.writer.bo;
 
-public abstract class User {
-    private long id;
-    private String firstName;
-    private String lastName;
-    private String username;
-    private String email;
-    private String role;
+import javax.persistence.*;
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", updatable = false, nullable = false)
+    private Long id;
+    protected String firstName;
+    protected String lastName;
+    protected String username;
+    protected String email;
+    protected String role;
 
     public User(String firstName, String lastName, String username, String email, String role) {
         this.firstName = firstName;
@@ -16,8 +23,8 @@ public abstract class User {
         this.role = role;
     }
 
-    public long getId() {
-        return id;
+    public User() {
+
     }
 
     public void setId(long id) {
@@ -62,5 +69,12 @@ public abstract class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
