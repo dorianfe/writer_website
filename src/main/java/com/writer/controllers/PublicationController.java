@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -18,14 +19,19 @@ public class PublicationController {
 
     @Autowired
     private PublicationService publicationService;
+    int nbCnx = 1;
 
     @GetMapping(value = "/publications", produces = "application/json")
     public List<Publication> publications() {
         List<Publication> publications = publicationService.listAllPublications();
-        System.out.println("Connexion sur publications");
+        String cnx = "Connexion sur publications";
+
+        System.out.println("Connexion sur publications" + nbCnx);
+        nbCnx++;
         return publications;
     }
 
+    @PostMapping(value = "/nouvellePublication", produces = "application/json")
     public ResponseEntity<Publication> addPublication(@RequestBody Publication p, UriComponentsBuilder ucBuilder) {
 
         publicationService.addPublication(p);

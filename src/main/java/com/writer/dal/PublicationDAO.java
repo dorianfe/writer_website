@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface PublicationDAO extends JpaRepository<Publication, Integer> {
 
-    List<Publication> findByWritingDate();
+
 
 }

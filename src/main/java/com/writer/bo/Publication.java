@@ -2,10 +2,11 @@ package com.writer.bo;
 
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Publication {
+public class Publication {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,15 +16,14 @@ public abstract class Publication {
     protected String genre;
     protected String body;
     protected String synopsis;
-    protected Date writingDate;
-    protected Date updated;
+    protected LocalDate writingDate;
+    protected LocalDate updated;
     @ManyToOne
     protected Author author;
     protected String language;
     protected int nbOfWords;
 
-    public Publication(long id, String title, String genre, String body, String synopsis, Date writingDate, Date updated, Author author, String language, int nbOfWords) {
-        this.id = id;
+    public Publication(String title, String genre, String body, String synopsis, LocalDate writingDate, LocalDate updated, Author author, Language language, int nbOfWords) {
         this.title = title;
         this.genre = genre;
         this.body = body;
@@ -31,7 +31,7 @@ public abstract class Publication {
         this.writingDate = writingDate;
         this.updated = updated;
         this.author = author;
-        this.language = language;
+        this.language = language.getLanguage();
         this.nbOfWords = nbOfWords;
     }
 
@@ -79,19 +79,19 @@ public abstract class Publication {
         this.synopsis = synopsis;
     }
 
-    public Date getWritingDate() {
+    public LocalDate getWritingDate() {
         return writingDate;
     }
 
-    public void setWritingDate(Date writingDate) {
+    public void setWritingDate(LocalDate writingDate) {
         this.writingDate = writingDate;
     }
 
-    public Date getUpdated() {
+    public LocalDate getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Date updated) {
+    public void setUpdated(LocalDate updated) {
         this.updated = updated;
     }
 

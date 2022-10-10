@@ -15,8 +15,8 @@ public class PublicationService{
    public List<Publication> listAllPublications() {
        return dao.findAll();
    }
-   public Publication addPublication(Publication publication) {
-       return dao.save(publication);
+   public void addPublication(Publication publication) {
+       dao.save(publication);
    }
    public void deletePublication(Publication publication) {
        dao.delete(publication);

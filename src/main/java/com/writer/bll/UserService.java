@@ -16,8 +16,8 @@ public class UserService {
         return dao.findAll();
     }
 
-    public User addUser(User user) {
-        return dao.save(user);
+    public void addUser(User user) {
+        dao.save(user);
     }
     public void deleteUser(User user) {
         dao.delete(user);
