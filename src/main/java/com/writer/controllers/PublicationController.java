@@ -3,9 +3,8 @@ import com.writer.exception.PublicationNotFoundException;
 
 import com.writer.bll.PublicationService;
 import com.writer.bo.Publication;
-import com.writer.exception.PublicationNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -21,18 +21,30 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 public class PublicationController {
 
-    @Autowired
     private PublicationService publicationService;
+    private final PublicationModelAssembler assembler;
+
+    public PublicationController(PublicationService publicationService, PublicationModelAssembler assembler) {
+        this.publicationService = publicationService;
+        this.assembler = assembler;
+    }
+
     int nbCnx = 1;
 
+
+
     @GetMapping(value = "/publications", produces = "application/json")
-    public List<Publication> publications() {
-        List<Publication> publications = publicationService.listAllPublications();
-        String cnx = "Connexion sur publications";
+    public CollectionModel<EntityModel<Publication>> all() {
+        List<EntityModel<Publication>> publications = publicationService.listAllPublications()
+                .stream().map(publication -> EntityModel.of(publication,
+                        linkTo(methodOn(PublicationController.class).one(publication.getId())).withSelfRel(),
+                        linkTo(methodOn(PublicationController.class).all()).withRel("publications")))
+                .collect(Collectors.toList());
+
 
         System.out.println("Connexion sur publications" + nbCnx);
         nbCnx++;
-        return publications;
+        return CollectionModel.of(publications, linkTo(methodOn(PublicationController.class).all()).withSelfRel());
     }
 
     @GetMapping("/publications/{id}")
@@ -46,7 +58,7 @@ public class PublicationController {
     }
 
     @PostMapping(value = "/publications/new", produces = "application/json")
-    public ResponseEntity<Publication> addPublication(@RequestBody Publication p, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<Publication> add(@RequestBody Publication p, UriComponentsBuilder ucBuilder) {
         System.out.println("tentative de POST");
 
         publicationService.addPublication(p);
