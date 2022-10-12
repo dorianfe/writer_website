@@ -1,7 +1,9 @@
 package com.writer.controllers;
+import com.writer.exception.PublicationNotFoundException;
 
 import com.writer.bll.PublicationService;
 import com.writer.bo.Publication;
+import com.writer.exception.PublicationNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.hateoas.EntityModel;
@@ -34,15 +36,16 @@ public class PublicationController {
     }
 
     @GetMapping("/publications/{id}")
-    EntityModel<Publication> one(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
+    EntityModel<Publication> one(@PathVariable Long id) {
         Publication publication = publicationService.getOnePublication(id)
-                .orElseThrow(ChangeSetPersister.NotFoundException::new);
+                .orElseThrow(() -> new PublicationNotFoundException(id));
         System.out.println("cnx sur one()");
-        return EntityModel.of(publication, linkTo(methodOn(PublicationController.class).one(id)).withSelfRel(),
+        return EntityModel.of(publication,
+                linkTo(methodOn(PublicationController.class).one(id)).withSelfRel(),
                 linkTo(methodOn(PublicationService.class).listAllPublications()).withRel("publications"));
     }
 
-    @PostMapping(value = "/nouvellePublication", produces = "application/json")
+    @PostMapping(value = "/publications/new", produces = "application/json")
     public ResponseEntity<Publication> addPublication(@RequestBody Publication p, UriComponentsBuilder ucBuilder) {
         System.out.println("tentative de POST");
 
