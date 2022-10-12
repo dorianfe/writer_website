@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface PublicationDAO extends JpaRepository<Publication, Integer> {
+public interface PublicationDAO extends JpaRepository<Publication, Long> {
 
 
 

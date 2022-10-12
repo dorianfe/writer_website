@@ -3,16 +3,18 @@ package com.writer.controllers;
 import com.writer.bll.PublicationService;
 import com.writer.bo.Publication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class PublicationController {
@@ -31,8 +33,18 @@ public class PublicationController {
         return publications;
     }
 
+    @GetMapping("/publications/{id}")
+    EntityModel<Publication> one(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
+        Publication publication = publicationService.getOnePublication(id)
+                .orElseThrow(ChangeSetPersister.NotFoundException::new);
+        System.out.println("cnx sur one()");
+        return EntityModel.of(publication, linkTo(methodOn(PublicationController.class).one(id)).withSelfRel(),
+                linkTo(methodOn(PublicationService.class).listAllPublications()).withRel("publications"));
+    }
+
     @PostMapping(value = "/nouvellePublication", produces = "application/json")
     public ResponseEntity<Publication> addPublication(@RequestBody Publication p, UriComponentsBuilder ucBuilder) {
+        System.out.println("tentative de POST");
 
         publicationService.addPublication(p);
         List<Publication> publications = publicationService.listAllPublications();
