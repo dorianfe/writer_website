@@ -1,10 +1,12 @@
-package com.writer.controllers;
+package com.writer.controllers.modelAssemblers;
 
 import com.writer.bo.Publication;
+import com.writer.controllers.PublicationController;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -17,7 +19,7 @@ public class PublicationModelAssembler implements RepresentationModelAssembler<P
     @Override
     public EntityModel<Publication> toModel(Publication publication) {
         return EntityModel.of(publication,
-                linkTo(methodOn(PublicationController.class).one(publication.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(methodOn(PublicationController.class).one(publication.getId())).withSelfRel(),
                 linkTo(methodOn(PublicationController.class).all()).withRel("publications"));
     }
 }

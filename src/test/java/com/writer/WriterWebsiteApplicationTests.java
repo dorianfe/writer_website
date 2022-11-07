@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootTest
 class WriterWebsiteApplicationTests {
@@ -34,7 +32,7 @@ class WriterWebsiteApplicationTests {
 
     @Test
     void testGetPublicationsIfExist() {
-        System.out.println(beanPublicationService.listAllPublications());
+        System.out.println(beanPublicationService.listAll());
 
     }
 

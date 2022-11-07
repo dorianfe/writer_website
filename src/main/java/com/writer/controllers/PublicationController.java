@@ -1,9 +1,9 @@
 package com.writer.controllers;
+import com.writer.controllers.modelAssemblers.PublicationModelAssembler;
 import com.writer.exception.PublicationNotFoundException;
 
 import com.writer.bll.PublicationService;
 import com.writer.bo.Publication;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +21,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 public class PublicationController {
 
-    private PublicationService publicationService;
+    private final PublicationService publicationService;
     private final PublicationModelAssembler assembler;
 
     public PublicationController(PublicationService publicationService, PublicationModelAssembler assembler) {
@@ -30,17 +30,11 @@ public class PublicationController {
     }
 
     int nbCnx = 1;
-
-
-
     @GetMapping(value = "/publications", produces = "application/json")
     public CollectionModel<EntityModel<Publication>> all() {
-        List<EntityModel<Publication>> publications = publicationService.listAllPublications()
-                .stream().map(publication -> EntityModel.of(publication,
-                        linkTo(methodOn(PublicationController.class).one(publication.getId())).withSelfRel(),
-                        linkTo(methodOn(PublicationController.class).all()).withRel("publications")))
+        List<EntityModel<Publication>> publications = publicationService.listAll()
+                .stream().map(assembler::toModel)
                 .collect(Collectors.toList());
-
 
         System.out.println("Connexion sur publications" + nbCnx);
         nbCnx++;
@@ -48,13 +42,11 @@ public class PublicationController {
     }
 
     @GetMapping("/publications/{id}")
-    EntityModel<Publication> one(@PathVariable Long id) {
-        Publication publication = publicationService.getOnePublication(id)
+    public EntityModel<Publication> one(@PathVariable Long id) {
+        Publication publication = publicationService.getOne(id)
                 .orElseThrow(() -> new PublicationNotFoundException(id));
         System.out.println("cnx sur one()");
-        return EntityModel.of(publication,
-                linkTo(methodOn(PublicationController.class).one(id)).withSelfRel(),
-                linkTo(methodOn(PublicationService.class).listAllPublications()).withRel("publications"));
+        return assembler.toModel(publication);
     }
 
     @PostMapping(value = "/publications/new", produces = "application/json")
@@ -62,7 +54,7 @@ public class PublicationController {
         System.out.println("tentative de POST");
 
         publicationService.addPublication(p);
-        List<Publication> publications = publicationService.listAllPublications();
+        List<Publication> publications = publicationService.listAll();
         int nb = publications.size();
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/{id}").buildAndExpand(nb).toUri());

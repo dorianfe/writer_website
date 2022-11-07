@@ -13,10 +13,10 @@ public class PublicationService{
     @Autowired
     PublicationDAO dao;
 
-   public List<Publication> listAllPublications() {
+   public List<Publication> listAll() {
        return dao.findAll();
    }
-   public Optional<Publication> getOnePublication(Long id) { return dao.findById(id);}
+   public Optional<Publication> getOne(Long id) { return dao.findById(id);}
    public void addPublication(Publication publication) {
        dao.save(publication);
    }
