@@ -9,7 +9,7 @@ public class ShortStory extends Publication {
     private int maxNbOfWords;
 
     public ShortStory(String title, String genre, String body, String synopsis, LocalDate writingDate, LocalDate updated, Author author, Language language, int nbOfWords, int maxNbOfWords) {
-        super(title, genre, body, synopsis, writingDate, updated, author, language, nbOfWords);
+        super(title, genre, body, synopsis, writingDate, author, language, nbOfWords);
         this.maxNbOfWords = maxNbOfWords;
     }
 

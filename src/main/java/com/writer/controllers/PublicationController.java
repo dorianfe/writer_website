@@ -6,6 +6,7 @@ import com.writer.bll.PublicationService;
 import com.writer.bo.Publication;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,15 +50,12 @@ public class PublicationController {
         return assembler.toModel(publication);
     }
 
-    @PostMapping(value = "/publications/new", produces = "application/json")
-    public ResponseEntity<Publication> add(@RequestBody Publication p, UriComponentsBuilder ucBuilder) {
-        System.out.println("tentative de POST");
+    @PostMapping(value = "/publications")
+    public ResponseEntity<?> add(@RequestBody Publication p) {
 
-        publicationService.addPublication(p);
-        List<Publication> publications = publicationService.listAll();
-        int nb = publications.size();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/{id}").buildAndExpand(nb).toUri());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+        EntityModel<Publication> entityModel = assembler.toModel(publicationService.addPublication(p));
+        System.out.println("tentative de POST");
+       return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+               .body(entityModel);
     }
 }

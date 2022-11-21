@@ -1,6 +1,7 @@
 package com.writer.bo;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -14,6 +15,7 @@ public class User {
     protected String username;
     protected String email;
     protected String role;
+    protected String password;
 
     public User(String firstName, String lastName, String username, String email, String role) {
         this.firstName = firstName;
@@ -21,6 +23,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.role = role;
+        this.password = password;
     }
 
     public User() {
@@ -76,5 +79,25 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(role, user.role);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, username, email, role);
     }
 }

@@ -12,10 +12,9 @@ public class UserService {
     @Autowired
     UserDAO dao;
 
-    public List<User> listAllUsers() {
+    public List<User> listAll() {
         return dao.findAll();
     }
-
     public void addUser(User user) {
         dao.save(user);
     }

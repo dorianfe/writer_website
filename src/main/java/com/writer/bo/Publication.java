@@ -3,7 +3,8 @@ package com.writer.bo;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Publication {
@@ -16,20 +17,22 @@ public class Publication {
     protected String genre;
     protected String body;
     protected String synopsis;
+    @Basic
     protected LocalDate writingDate;
-    protected LocalDate updated;
+    @Basic
+    protected LocalDateTime updated;
     @ManyToOne
     protected Author author;
     protected String language;
     protected int nbOfWords;
 
-    public Publication(String title, String genre, String body, String synopsis, LocalDate writingDate, LocalDate updated, Author author, Language language, int nbOfWords) {
+    public Publication(String title, String genre, String body, String synopsis, LocalDate writingDate, Author author, Language language, int nbOfWords) {
         this.title = title;
         this.genre = genre;
         this.body = body;
         this.synopsis = synopsis;
         this.writingDate = writingDate;
-        this.updated = updated;
+        this.updated = LocalDateTime.now();
         this.author = author;
         this.language = language.getLanguage();
         this.nbOfWords = nbOfWords;
@@ -87,11 +90,11 @@ public class Publication {
         this.writingDate = writingDate;
     }
 
-    public LocalDate getUpdated() {
+    public LocalDateTime getUpdated() {
         return updated;
     }
 
-    public void setUpdated(LocalDate updated) {
+    public void setUpdated(LocalDateTime updated) {
         this.updated = updated;
     }
 

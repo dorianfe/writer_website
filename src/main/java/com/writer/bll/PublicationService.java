@@ -17,8 +17,9 @@ public class PublicationService{
        return dao.findAll();
    }
    public Optional<Publication> getOne(Long id) { return dao.findById(id);}
-   public void addPublication(Publication publication) {
+   public Publication addPublication(Publication publication) {
        dao.save(publication);
+       return publication;
    }
    public void deletePublication(Publication publication) {
        dao.delete(publication);
