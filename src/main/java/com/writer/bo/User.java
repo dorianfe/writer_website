@@ -1,5 +1,7 @@
 package com.writer.bo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -14,7 +16,9 @@ public class User {
     protected String lastName;
     protected String username;
     protected String email;
+    @JsonIgnore
     protected String role;
+    @JsonIgnore
     protected String password;
 
     public User(String firstName, String lastName, String username, String email, String role) {

@@ -32,7 +32,6 @@ public class Publication {
         this.body = body;
         this.synopsis = synopsis;
         this.writingDate = writingDate;
-        this.updated = LocalDateTime.now();
         this.author = author;
         this.language = language.getLanguage();
         this.nbOfWords = nbOfWords;

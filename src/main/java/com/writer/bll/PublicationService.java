@@ -1,24 +1,28 @@
 package com.writer.bll;
 import com.writer.bo.Publication;
 import com.writer.dal.PublicationDAO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class PublicationService{
 
-    @Autowired
-    PublicationDAO dao;
+    private final PublicationDAO dao;
 
-   public List<Publication> listAll() {
+    public PublicationService(PublicationDAO dao) {
+        this.dao = dao;
+    }
+
+    public List<Publication> listAll() {
        return dao.findAll();
    }
    public Optional<Publication> getOne(Long id) { return dao.findById(id);}
    public Publication addPublication(Publication publication) {
-       dao.save(publication);
+        publication.setUpdated(LocalDateTime.now());
+        dao.save(publication);
        return publication;
    }
    public void deletePublication(Publication publication) {
